@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toolifiy - Compress &amp; Reduce PDF File Size Online Free</title>
+    <meta name="description"
+        content="Reduce your PDF file size online for free. Toolifiy compresses PDFs directly in your browser — no uploads, no servers, completely private. Choose from three compression quality levels.">
+    <meta name="keywords"
+        content="compress pdf, reduce pdf size, pdf compressor online, shrink pdf, pdf size reducer, compress pdf free, browser pdf compressor, pdf file size reducer, optimize pdf, pdf compression tool">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Toolifiy">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://toolifiy.github.io/compress-pdf.html">
+    <meta property="og:title" content="Toolifiy - Compress &amp; Reduce PDF File Size Online Free">
+    <meta property="og:description"
+        content="Shrink your PDF file size instantly in your browser. Choose your compression level and download a smaller PDF — 100% private, no uploads.">
+    <meta property="og:image" content="https://toolifiy.github.io/assets/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://toolifiy.github.io/compress-pdf.html">
+    <meta property="twitter:title" content="Toolifiy - Compress &amp; Reduce PDF File Size Online Free">
+    <meta property="twitter:description"
+        content="Shrink your PDF file size instantly in your browser. Choose your compression level and download a smaller PDF — 100% private, no uploads.">
+    <meta property="twitter:image" content="https://toolifiy.github.io/assets/og-image.png">
+
+    <!-- Canonical Link -->
+    <link rel="canonical" href="https://toolifiy.github.io/compress-pdf.html">
+
+    <!-- Mobile Theme Color -->
+    <meta name="theme-color" content="#e11d48">
+
+    <!-- JSON-LD Schema Markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Toolifiy - PDF Compressor",
+      "url": "https://toolifiy.github.io/compress-pdf.html",
+      "description": "Reduce and compress PDF file size online for free. Three compression levels available. All processing is done inside the browser for complete privacy.",
+      "applicationCategory": "Utility",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript. Requires HTML5.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0.00",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9356808065862787"
+        crossorigin="anonymous"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --primary: #e11d48;
+            --primary-hover: #be123c;
+        }
+
+        .quality-selector {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .quality-option {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .quality-option input[type="radio"] {
+            display: none;
+        }
+
+        .quality-option label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.9rem 0.5rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            background: var(--card-bg);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .quality-option label .q-icon {
+            font-size: 1.3rem;
+        }
+
+        .quality-option label strong {
+            color: var(--text-main);
+            font-size: 0.9rem;
+        }
+
+        .quality-option input[type="radio"]:checked + label {
+            border-color: var(--primary);
+            background: rgba(225, 29, 72, 0.08);
+            color: var(--primary);
+        }
+
+        .quality-option input[type="radio"]:checked + label strong {
+            color: var(--primary);
+        }
+
+        .compress-stats {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            background: rgba(225, 29, 72, 0.06);
+            border: 1px solid rgba(225, 29, 72, 0.2);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .compress-stat-item {
+            text-align: center;
+        }
+
+        .compress-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.2rem;
+        }
+
+        .compress-stat-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .compress-stat-value.saved {
+            color: #10b981;
+        }
+
+        .stat-divider {
+            font-size: 1.5rem;
+            color: var(--border);
+        }
+    </style>
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+
+<body>
+    <header class="hero">
+        <div class="logo" style="justify-content: center; margin-bottom: 1rem; font-size: 2.2rem;">
+            <i class="fa-solid fa-layer-group"></i> Toolifiy
+        </div>
+        <h1>Fast, Secure, &amp; 100% Free Tools</h1>
+        <p>All processing is done directly in your browser. No files are uploaded to our servers, ensuring your privacy.
+        </p>
+    </header>
+
+    <main class="main-content">
+        <div class="nav-container-new"
+            style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 2rem; padding-bottom: 0.5rem;">
+            <ul class="nav-links" style="justify-content: center; width: max-content; margin: 0 auto;">
+                <li><a href="index.html" class="nav-item">Image to PDF</a></li>
+                <li><a href="txt-to-pdf.html" class="nav-item">Text to PDF</a></li>
+                <li><a href="merge-pdf.html" class="nav-item">Combine PDF</a></li>
+                <li><a href="compress-pdf.html" class="nav-item active">Compress PDF</a></li>
+                <li><a href="pdf-to-img.html" class="nav-item">PDF to Image</a></li>
+                <li><a href="watermark-pdf.html" class="nav-item">Add Watermark</a></li>
+            </ul>
+        </div>
+
+        <!-- Compress PDF Tool -->
+        <section id="compress-pdf" class="tool-section active-section">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-file-zipper"></i> Compress PDF</h2>
+                    <p>Reduce your PDF file size while keeping it readable. Choose a quality level below.</p>
+                </div>
+
+                <div class="drop-zone" id="compress-pdf-dropzone">
+                    <i class="fa-solid fa-compress"></i>
+                    <p>Select a PDF to Compress</p>
+                    <input type="file" id="compress-pdf-input" accept="application/pdf" hidden>
+                </div>
+
+                <div class="preview-container" id="compress-pdf-preview" style="display: none;">
+                    <h3>Selected PDF</h3>
+                    <div class="image-list" id="compress-pdf-list"></div>
+                </div>
+
+                <!-- Quality selector — shown after file is selected -->
+                <div id="compress-quality-controls" style="display: none;">
+                    <div class="quality-selector">
+                        <div class="quality-option">
+                            <input type="radio" id="q-high" name="compress-quality" value="high">
+                            <label for="q-high">
+                                <span class="q-icon"><i class="fa-solid fa-star"></i></span>
+                                <strong>High Quality</strong>
+                                <span>Less compression</span>
+                            </label>
+                        </div>
+                        <div class="quality-option">
+                            <input type="radio" id="q-medium" name="compress-quality" value="medium" checked>
+                            <label for="q-medium">
+                                <span class="q-icon"><i class="fa-solid fa-sliders"></i></span>
+                                <strong>Balanced</strong>
+                                <span>Recommended</span>
+                            </label>
+                        </div>
+                        <div class="quality-option">
+                            <input type="radio" id="q-low" name="compress-quality" value="low">
+                            <label for="q-low">
+                                <span class="q-icon"><i class="fa-solid fa-bolt"></i></span>
+                                <strong>Max Compress</strong>
+                                <span>Smallest size</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compression stats — shown after processing -->
+                <div class="compress-stats" id="compress-stats" style="display: none;">
+                    <div class="compress-stat-item">
+                        <div class="compress-stat-label">Original Size</div>
+                        <div class="compress-stat-value" id="stat-original">—</div>
+                    </div>
+                    <div class="stat-divider"><i class="fa-solid fa-arrow-right"></i></div>
+                    <div class="compress-stat-item">
+                        <div class="compress-stat-label">Compressed Size</div>
+                        <div class="compress-stat-value" id="stat-compressed">—</div>
+                    </div>
+                    <div class="stat-divider">|</div>
+                    <div class="compress-stat-item">
+                        <div class="compress-stat-label">Space Saved</div>
+                        <div class="compress-stat-value saved" id="stat-saved">—</div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-primary" id="btn-compress-pdf" disabled>
+                        <span>Compress PDF</span>
+                        <div class="spinner" style="display: none;"></div>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEO Content -->
+        <article class="seo-content"
+            style="margin-top: 4rem; padding-top: 2.5rem; border-top: 1px solid var(--border);">
+            
+            <section id="about" style="margin-bottom: 2.5rem;">
+                <h2 style="font-size: 1.6rem; margin-bottom: 1rem; color: var(--primary);"><i
+                        class="fa-solid fa-circle-info"></i> About Toolifiy's PDF Compressor</h2>
+                <p style="margin-bottom: 1rem; line-height: 1.8; color: var(--text-muted); font-size: 1.05rem;">
+                    PDF files are universally loved for their consistent formatting, but they have one major drawback: they can easily become massive in file size. Whether it's due to high-resolution embedded images, complex vectors, or inefficient encoding, large PDFs are a nightmare to deal with. They bounce back from email servers with file size limits, take forever to upload to government or educational portals, and eat up valuable storage space on your device. Toolifiy's PDF Compressor is engineered to solve this problem instantly. Our advanced compression algorithms intelligently reduce the file size of your documents while maintaining maximum readability. The best part? Like all our tools, this compressor runs entirely within your web browser, ensuring that your confidential documents are never uploaded to a remote server.
+                </p>
+            </section>
+
+            <section id="how-to-use" style="margin-bottom: 2.5rem;">
+                <h2 style="font-size: 1.6rem; margin-bottom: 1.5rem; color: var(--primary);"><i
+                        class="fa-solid fa-book-open"></i> How to Compress a PDF</h2>
+                <p style="margin-bottom: 1.5rem; line-height: 1.8; color: var(--text-muted);">
+                    Shrinking your PDF is a simple, three-step process designed for both beginners and power users:
+                </p>
+                <ol style="margin-bottom: 1.5rem; line-height: 1.8; color: var(--text-muted); padding-left: 1.5rem;">
+                    <li><strong>Select Your Document:</strong> Drag and drop your bloated PDF file into the designated upload area above, or click the area to browse your file system.</li>
+                    <li><strong>Choose Compression Level:</strong> Once the file is loaded, you will be presented with three distinct compression options:
+                        <ul style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                            <li><strong style="color: var(--text-main);">High Quality:</strong> Applies minimal compression. This is ideal when the visual fidelity of images within the PDF is critical, but you still need a slight reduction in file size.</li>
+                            <li><strong style="color: var(--text-main);">Balanced (Recommended):</strong> Provides the perfect middle ground. It significantly reduces file size while ensuring that text remains sharp and images are perfectly acceptable for standard viewing and printing.</li>
+                            <li><strong style="color: var(--text-main);">Max Compress:</strong> Applies aggressive compression. This is the best option when you are facing strict file size limits (like a 2MB email attachment limit) and prioritize a small file size over perfect image quality.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Compress and Download:</strong> Click the "Compress PDF" button. The tool will process your file locally. Once finished, it will display the original size, the new compressed size, and the total space saved, allowing you to instantly download the optimized file.</li>
+                </ol>
+            </section>
+
+            <section id="benefits" style="margin-bottom: 2.5rem;">
+                <h2 style="font-size: 1.6rem; margin-bottom: 1.5rem; color: var(--primary);"><i
+                        class="fa-solid fa-shield-halved"></i> Why Client-Side Compression Matters</h2>
+                <p style="margin-bottom: 1.5rem; line-height: 1.8; color: var(--text-muted);">
+                    When you use a standard online PDF compressor, you are essentially handing over a copy of your document to a stranger's server. If that document contains financial statements, medical records, or proprietary business data, this is a massive security risk. Toolifiy's client-side compression completely bypasses this risk. The compression scripts are downloaded to your browser when you visit the page, and the actual processing happens using your device's CPU and memory. 
+                </p>
+                <p style="margin-bottom: 1.5rem; line-height: 1.8; color: var(--text-muted);">
+                    This local approach not only guarantees 100% privacy but also eliminates the frustrating wait times associated with uploading large files over a slow internet connection. You get professional-grade PDF optimization, instantly and securely. Try reducing your file size today and experience the difference.
+                </p>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Toolifiy. All tools run safely in your browser.</p>
+        <div class="footer-links">
+            <a href="about-us.html">About Us</a>
+            <a href="privacy-policy.html">Privacy Policy</a>
+            <a href="terms-of-service.html">Terms of Service</a>
+            <a href="contact-us.html">Contact Us</a>
+        </div>
+    </footer>
+
+    <!-- Custom Script -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>

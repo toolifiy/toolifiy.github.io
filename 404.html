@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - Toolifiy</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            text-align: center;
+        }
+        .error-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .error-code {
+            font-size: 8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0;
+            line-height: 1;
+        }
+        .error-title {
+            font-size: 2rem;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+        }
+        .error-msg {
+            color: var(--text-muted);
+            max-width: 500px;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        .btn-home {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-home:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        .redirect-msg {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <header class="hero" style="padding: 1.5rem 1rem;">
+        <div class="logo" style="justify-content: center; font-size: 2rem;">
+            <i class="fa-solid fa-layer-group"></i> Toolifiy
+        </div>
+    </header>
+
+    <main class="error-container">
+        <h1 class="error-code">404</h1>
+        <h2 class="error-title">Oops! Page Not Found</h2>
+        <p class="error-msg">
+            It looks like the page you are looking for has been moved, renamed, or no longer exists. 
+            Don't worry, all our free PDF tools are still here!
+        </p>
+        <a href="/" class="btn-home"><i class="fa-solid fa-house"></i> Go to Homepage</a>
+        <p class="redirect-msg">You will be automatically redirected to the homepage in <span id="countdown">5</span> seconds...</p>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Toolifiy. All tools run safely in your browser.</p>
+    </footer>
+
+    <script>
+        // Automatic redirect to homepage
+        let timeLeft = 5;
+        const countdownEl = document.getElementById('countdown');
+        
+        const timer = setInterval(() => {
+            timeLeft--;
+            countdownEl.textContent = timeLeft;
+            
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                window.location.href = '/';
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

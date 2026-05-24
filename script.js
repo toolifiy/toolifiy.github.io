@@ -468,6 +468,190 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ==========================================
+    // 4. COMPRESS PDF
+    // ==========================================
+    const compressDropzone = document.getElementById('compress-pdf-dropzone');
+    const compressInput = document.getElementById('compress-pdf-input');
+    const compressPreview = document.getElementById('compress-pdf-preview');
+    const compressList = document.getElementById('compress-pdf-list');
+    const compressQualityControls = document.getElementById('compress-quality-controls');
+    const compressStats = document.getElementById('compress-stats');
+    const btnCompressPdf = document.getElementById('btn-compress-pdf');
+    const statOriginal = document.getElementById('stat-original');
+    const statCompressed = document.getElementById('stat-compressed');
+    const statSaved = document.getElementById('stat-saved');
+    
+    let fileToCompress = null;
+
+    if (compressDropzone && compressInput && btnCompressPdf) {
+        compressDropzone.addEventListener('click', () => compressInput.click());
+        compressDropzone.addEventListener('dragover', (e) => { e.preventDefault(); compressDropzone.classList.add('dragover'); });
+        compressDropzone.addEventListener('dragleave', () => compressDropzone.classList.remove('dragover'));
+        
+        compressDropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            compressDropzone.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0 && (e.dataTransfer.files[0].type === 'application/pdf' || /\.pdf$/i.test(e.dataTransfer.files[0].name))) {
+                handleCompressFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        compressInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) handleCompressFile(e.target.files[0]);
+        });
+
+        function handleCompressFile(file) {
+            if (!(file.type === 'application/pdf' || /\.pdf$/i.test(file.name))) {
+                alert('Please select a valid PDF file.');
+                return;
+            }
+            
+            fileToCompress = file;
+            compressList.innerHTML = '';
+            
+            const div = document.createElement('div');
+            div.className = 'img-preview-item';
+            div.style.background = '#e2e8f0';
+            div.style.display = 'flex';
+            div.style.alignItems = 'center';
+            div.style.justifyContent = 'center';
+            div.style.flexDirection = 'column';
+            div.style.padding = '10px';
+            
+            const icon = document.createElement('i');
+            icon.className = 'fa-solid fa-file-pdf';
+            icon.style.fontSize = '2rem';
+            icon.style.color = 'var(--primary)';
+            
+            const text = document.createElement('span');
+            text.textContent = file.name;
+            text.style.fontSize = '0.7rem';
+            text.style.marginTop = '10px';
+            text.style.wordBreak = 'break-all';
+            text.style.textAlign = 'center';
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-img-btn';
+            removeBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+            removeBtn.onclick = (e) => {
+                e.stopPropagation();
+                fileToCompress = null;
+                compressPreview.style.display = 'none';
+                compressQualityControls.style.display = 'none';
+                compressStats.style.display = 'none';
+                btnCompressPdf.disabled = true;
+                compressInput.value = '';
+            };
+            
+            div.appendChild(icon);
+            div.appendChild(text);
+            div.appendChild(removeBtn);
+            compressList.appendChild(div);
+
+            compressPreview.style.display = 'block';
+            compressQualityControls.style.display = 'block';
+            compressStats.style.display = 'none';
+            btnCompressPdf.disabled = false;
+        }
+
+        btnCompressPdf.addEventListener('click', async () => {
+            if (!fileToCompress) return;
+            
+            const qualitySelected = document.querySelector('input[name="compress-quality"]:checked').value;
+            
+            const btnText = btnCompressPdf.querySelector('span');
+            const spinner = btnCompressPdf.querySelector('.spinner');
+            
+            btnText.style.display = 'none';
+            spinner.style.display = 'block';
+            btnCompressPdf.disabled = true;
+            compressStats.style.display = 'none';
+
+            try {
+                // Ensure worker is loaded before using pdf.js
+                window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                
+                const arrayBuffer = await fileToCompress.arrayBuffer();
+                const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                
+                const { jsPDF } = window.jspdf;
+                const newPdf = new jsPDF();
+                
+                let scale = 1.5;
+                let imgQuality = 0.65;
+                
+                if (qualitySelected === 'high') {
+                    scale = 2.0;
+                    imgQuality = 0.85;
+                } else if (qualitySelected === 'low') {
+                    scale = 1.0;
+                    imgQuality = 0.45;
+                }
+                
+                for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                    if (pageNum > 1) newPdf.addPage();
+                    const page = await pdf.getPage(pageNum);
+                    const viewport = page.getViewport({ scale });
+                    
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    
+                    await page.render({ canvasContext: context, viewport: viewport }).promise;
+                    
+                    const imgData = canvas.toDataURL('image/jpeg', imgQuality);
+                    
+                    const pageWidth = newPdf.internal.pageSize.getWidth();
+                    const pageHeight = newPdf.internal.pageSize.getHeight();
+                    
+                    newPdf.addImage(imgData, 'JPEG', 0, 0, pageWidth, pageHeight);
+                }
+
+                const pdfBlob = newPdf.output('blob');
+                
+                // Show stats
+                const originalSize = fileToCompress.size;
+                const newSize = pdfBlob.size;
+                let savedPercentage = 0;
+                
+                statOriginal.textContent = formatBytes(originalSize);
+                statCompressed.textContent = formatBytes(newSize);
+                
+                if (newSize < originalSize) {
+                    savedPercentage = Math.round(((originalSize - newSize) / originalSize) * 100);
+                    statSaved.textContent = `${savedPercentage}% smaller`;
+                    statSaved.classList.add('saved');
+                    statSaved.style.color = '#10b981';
+                } else {
+                    statSaved.textContent = `0% smaller`;
+                    statSaved.classList.remove('saved');
+                    statSaved.style.color = 'var(--text-main)';
+                }
+                
+                compressStats.style.display = 'flex';
+                
+                showPDFResultCard('compress-pdf', pdfBlob, `compressed_${fileToCompress.name}`, () => {
+                    fileToCompress = null;
+                    compressPreview.style.display = 'none';
+                    compressQualityControls.style.display = 'none';
+                    compressStats.style.display = 'none';
+                    compressInput.value = '';
+                    btnCompressPdf.disabled = true;
+                });
+                
+            } catch (error) {
+                console.error('Compress PDF Error:', error);
+                alert('An error occurred while compressing the PDF.');
+            } finally {
+                btnText.style.display = 'block';
+                spinner.style.display = 'none';
+                btnCompressPdf.disabled = false;
+            }
+        });
+    }
+
+    // ==========================================
     // 5. PDF TO IMAGE
     // ==========================================
     // Setup PDF.js worker
